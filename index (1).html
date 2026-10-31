@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algunas razones por las que te amo, mi Jaho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbeaf0; --ink:#3a1830; --muted:#7a5468; --rose:#c93d68;
+  --front:#fff7f9; --line:#efc7d5; --backbg:#c93d68; --backink:#fff;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#22101c; --ink:#f8e4ec; --muted:#c9a3b5; --rose:#ff7da1;
+    --front:#33192a; --line:#5a2f48; --backbg:#ff7da1; --backink:#2a0f1e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#22101c; --ink:#f8e4ec; --muted:#c9a3b5; --rose:#ff7da1;
+  --front:#33192a; --line:#5a2f48; --backbg:#ff7da1; --backink:#2a0f1e; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cormorant Garamond",Georgia,serif;min-height:100vh}
+main{max-width:920px;margin:0 auto;padding:56px 20px 72px}
+h1{font-weight:600;font-style:italic;font-size:clamp(2.4rem,8vw,4.2rem);line-height:1.05;margin:0 0 14px;text-align:center}
+.sub{text-align:center;color:var(--muted);font-size:1.25rem;margin:0 auto 40px;max-width:34ch}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+.card{all:unset;display:block;cursor:pointer;perspective:900px;min-height:170px;border-radius:18px}
+.card:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.inner{position:relative;width:100%;height:100%;min-height:170px;transition:transform .7s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
+.card.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px;text-align:center;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:var(--front);border:1.5px solid var(--line);color:var(--rose)}
+.front svg{width:34px;height:34px;fill:currentColor}
+.front span{font-size:1.1rem;color:var(--muted);font-style:italic}
+.back{background:var(--backbg);color:var(--backink);transform:rotateY(180deg);font-family:"Caveat",cursive;font-size:1.65rem;line-height:1.2;font-weight:600}
+.count{text-align:center;margin:34px 0 0;color:var(--muted);font-size:1.2rem;font-style:italic}
+.finale{max-width:30ch;margin:34px auto 0;text-align:center;font-size:clamp(1.8rem,5vw,2.6rem);font-style:italic;font-weight:600;color:var(--rose);line-height:1.15;opacity:0;transform:translateY(10px);transition:opacity 1.2s ease,transform 1.2s ease;visibility:hidden}
+.finale.show{opacity:1;transform:none;visibility:visible}
+@media (prefers-reduced-motion: reduce){.inner,.finale{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Algunas razones por las que te amo, mi Jaho</h1>
+  <p class="sub">Toca cada corazón para descubrir una razón.</p>
+  <div class="grid" id="grid"></div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <p class="finale" id="finale">Y todavía me faltan muchas más por decirte.</p>
+</main>
+<script>
+const razones = [
+  "Porque eres una chica inefable",
+  "Porque tus  hermosos ojos me encantan",
+  "Porque me haces sonreír sin intentarlo",
+  "Porque haces que cada día sea mejor",
+  "Porque me enseñaste a amar de verdad",
+  "Porque contigo la vida es más bonita",
+  "Porque tienes una carita preciosa",
+  "Porque me haces reír con las cosas que se te ocurren",
+  "Porque cuando estoy contigo soy el más feliz y es donde siempre quiero estar",
+  "Porque me encanta tu forma de ser, tan única"
+];
+const heart = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.8 5 6.1 5c2 0 3.4 1.1 4.2 2.4h3.4C14.5 6.1 15.9 5 17.9 5c3.3 0 5.2 3.4 3.7 6.8C19.5 16.4 12 21 12 21z"/></svg>';
+const grid = document.getElementById('grid');
+const count = document.getElementById('count');
+const finale = document.getElementById('finale');
+const seen = new Set();
+function update(){
+  count.textContent = seen.size === 0 ? "" : "Has descubierto " + seen.size + " de " + razones.length;
+  if (seen.size === razones.length) { count.textContent = "Las descubriste todas"; finale.classList.add('show'); }
+}
+razones.forEach((t,i)=>{
+  const b = document.createElement('button');
+  b.className = 'card';
+  b.type = 'button';
+  b.setAttribute('aria-pressed','false');
+  b.innerHTML = '<div class="inner"><div class="face front">'+heart+'<span>Toca para leer</span></div><div class="face back"></div></div>';
+  b.querySelector('.back').textContent = t;
+  b.addEventListener('click',()=>{
+    const on = b.classList.toggle('on');
+    b.setAttribute('aria-pressed', on);
+    if (on) seen.add(i);
+    update();
+  });
+  grid.appendChild(b);
+});
+</script>
+</body>
+</html>
